@@ -1,4 +1,4 @@
-const config = require('./db/dbconfig')
+const config = require('./dbconfig')
 const sql = require('mssql');
 
 async function getPersonas() {
@@ -11,17 +11,18 @@ async function getPersonas() {
 
 async function getPersona(PersonaId){
     try{
-        let pool = sql.connect(config);
-        let persona = await pool.request()
-        .input('IdPersona', sql.NVarChar, PersonaId)
+        let pool = await sql.connect(config);
+        let persona = pool.request()
+        .input('IdPersona', sql.Int, PersonaId)
         .query('SELECT * FROM Persona WHERE IdPersona = @IdPersona');
-        return persona.recordsets;
+        return (await persona).recordsets;
                  
     }catch(err){console.log(err);}
 }
 
 async function addPersona(persona){
     try{
+        console.log(persona);
         let pool = await sql.connect(config);
         let insertPersona = pool.request()
         .input('IdPersona', sql.Int, persona.IdPersona)
@@ -42,8 +43,8 @@ async function addPersona(persona){
 
 async function deletePersona(IdPersona){
     try{
-        let pool = sql.connect(config);
-        let deletePersona = (await pool).request()
+        let pool = await sql.connect(config);
+        let deletePersona = pool.request()
         .input('IdPersona', sql.Int, IdPersona)
         .execute('EliminarPersona');
         return deletePersona.recordsets;
