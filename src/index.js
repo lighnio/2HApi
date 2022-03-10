@@ -17,7 +17,7 @@ const router = express();
 //   Configuration
 /*********************/
 
-app.use(app.urlencoded({    extended: true   }));
+app.use(express.urlencoded({    extended: true   }));
 app.use(express.json());
 
 app.use(cors());
