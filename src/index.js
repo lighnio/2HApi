@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors');
 const { response } = require('express');
 const { request } = require('express');
+const { json } = require('express/lib/response');
 
 /*********************/
 //   Initializations
@@ -54,8 +55,14 @@ router.route('/personas/:id').get((req, res) => {
 
 router.route('/personas').post((req, res) => {
     let persona = {...req.body};
-    console.log(req);
     Db.addPersona(persona).then(data => {
         res.status(201).json(data);
+    })
+})
+
+router.route('/personas/:id').delete((req, res) => {
+    let IdPersona = req.params.id;
+    Db.deletePersona(IdPersona).then(data => {
+        res.status(200).json(data);
     })
 })

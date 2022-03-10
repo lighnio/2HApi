@@ -22,7 +22,6 @@ async function getPersona(PersonaId){
 
 async function addPersona(persona){
     try{
-        console.log(persona);
         let pool = await sql.connect(config);
         let insertPersona = pool.request()
         .input('IdPersona', sql.Int, persona.IdPersona)
