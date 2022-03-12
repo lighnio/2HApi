@@ -9,7 +9,8 @@ const { json } = require('express/lib/response');
 /*********************/
 //        Db
 /*********************/
-const Db = require('./db/dboperations')
+const Db = require('./db/dboperations');
+const dboperations = require('./db/dboperations');
 
 
 
@@ -94,6 +95,7 @@ router.route('/personas/:id').put((req, res) => {
 })
 
 // Empleados
+
 router.route('/empleados').get((req, res) => {
     Db.getEmpleados().then( data => {
         res.json(data[0]);
@@ -126,9 +128,25 @@ router.route('/empleados/:id').delete((req, res) => {
     }).catch(err => {console.log(err)})
 })
 
-// router.route('/personas/:id').put((req, res) => {
-//     let persona = {...req.body}
-//     Db.editPersona(persona).then(data => {
-//         res.status(200).json(data);
-//     }).catch(err => {console.log(err)})
-// })
+// Registro
+
+router.route('/registro').get((req, res) => {
+    Db.getRegistro().then(data => {
+        res.json(data[0]);
+    }).catch(err => {console.log(err)})
+})
+
+router.route('/registro').post((req, res) => {
+    let registro = {...req.body}
+    Db.addRegistro(registro).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {console.log(err)})
+})
+
+// Planilla
+
+router.route('/planilla').get((req, res) => {
+    Db.getPlanilla().then(data => {
+        res.json(data[0]);
+    }).catch(err => {console.log(err)})
+})

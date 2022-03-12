@@ -1,5 +1,6 @@
 const config = require('./dbconfig')
 const sql = require('mssql');
+const res = require('express/lib/response');
 
 
 /*********************/
@@ -115,6 +116,7 @@ async function editEmpleado(empleado){
         .execute('ActualizarEmpleado');
     } catch (err) {
         console.log(err);
+        // res.json(err);
     }
 }
 
@@ -125,17 +127,32 @@ async function deleteEmpleado(IdEmpleado){
     .execute('EliminarEmpleado')
 }
 
-// async function deletePersona(IdPersona){
-//     try{
-//         let pool = await sql.connect(config);
-//         let deletePersona = pool.request()
-//         .input('IdPersona', sql.Int, IdPersona)
-//         .execute('EliminarPersona');
-//         return deletePersona.recordsets;
-//     }catch(err){console.log(err);}
-// }
+// Registro
 
+async function getRegistro(){
+    let pool = await sql.connect(config);
+    let registro = pool.request()
+    .execute('GetRegistro')
+    return (await registro).recordsets
+}
 
+async function addRegistro(registro){
+    let pool = await sql.connect(config);
+    let addRegistro = pool.request()
+    .input('CodigoEmpleado', sql.Int, registro.CodigoEmpleado)
+    .input('TipoMovimiento', sql.VarChar, registro.TipoMovimiento)
+    .input('Jornada', sql.Int, registro.Jornada)
+    .execute('InsertarRegistro');
+}
+
+// Planilla
+
+async function getPlanilla(){
+    let pool = await sql.connect(config);
+    let planilla = pool.request()
+    .execute('Planilla');
+    return (await planilla).recordsets
+}
 
 /*********************/
 //      EXPORTS
@@ -153,7 +170,12 @@ module.exports = {
     getEmpleado: getEmpleado,
     addEmpleado: addEmpleado,
     editEmpleado: editEmpleado,
-    deleteEmpleado: deleteEmpleado
+    deleteEmpleado: deleteEmpleado,
+    // Registro
+    getRegistro: getRegistro,
+    addRegistro: addRegistro,
+    // Planilla
+    getPlanilla: getPlanilla
     
     // ... 
 }
