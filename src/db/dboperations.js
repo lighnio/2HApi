@@ -188,6 +188,5 @@ module.exports = {
     getPlanilla: getPlanilla,
     // Bitacora
     getBitacora: getBitacora
-    
     // ... 
 }
