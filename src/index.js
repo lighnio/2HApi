@@ -1,11 +1,17 @@
-const Db = require('./db/dboperations')
-const Persona = require('./classes/persona')
 const express = require('express');
 const bodyParser = require('body-parser')
 var cors = require('cors');
 const { response } = require('express');
 const { request } = require('express');
 const { json } = require('express/lib/response');
+
+
+/*********************/
+//        Db
+/*********************/
+const Db = require('./db/dboperations')
+
+
 
 /*********************/
 //   Initializations
@@ -52,36 +58,77 @@ router.use((req, res, next) => {
 //   API Routes
 /*********************/
 
+// Personas
 router.route('/personas').get((req, res) => {
     Db.getPersonas().then( data => {
         res.json(data[0]);
-    })
+    }).catch(err => {console.log(err)})
 })
 
 router.route('/personas/:id').get((req, res) => {
     Db.getPersona(req.params.id).then( data => {
         res.json(data[0]);
-    })
+    }).catch(err => {console.log(err)})
 })
 
 router.route('/personas').post((req, res) => {
     let persona = {...req.body};
     Db.addPersona(persona).then(data => {
         res.status(201).json(data);
-    })
+    }).catch(err => {console.log(err)})
 })
 
 router.route('/personas/:id').delete((req, res) => {
     let IdPersona = req.params.id;
     Db.deletePersona(IdPersona).then(data => {
         res.status(200).json(data);
-    })
+    }).catch(err => {console.log(err)})
 })
 
 router.route('/personas/:id').put((req, res) => {
     let persona = {...req.body}
-    let IdPersona = req.params.id;
-    Db.addPersona(persona).then(data => {
+    // let IdPersona = req.params.id;
+    Db.editPersona(persona).then(data => {
         res.status(200).json(data);
-    })
+    }).catch(err => {console.log(err)})
 })
+
+// Empleados
+router.route('/empleados').get((req, res) => {
+    Db.getEmpleados().then( data => {
+        res.json(data[0]);
+    }).catch(err => {console.log(err)})
+})
+
+router.route('/empleados/:id').get((req, res) => {
+    Db.getEmpleado(req.params.id).then( data => {
+        res.json(data[0]);
+    }).catch(err => {console.log(err)})
+})
+
+router.route('/empleados').post((req, res) => {
+    let empleado = {...req.body}
+    Db.addEmpleado(empleado).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {console.log('err: ', err)})
+})
+
+router.route('/empleados/:id').put((req, res) => {
+    let empleado = {...req.body}
+    Db.editEmpleado(empleado).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {console.log(err)})
+})
+
+router.route('/empleados/:id').delete((req, res) => {
+    Db.deleteEmpleado(req.params.id).then(data => {
+        res.status(200).json(data);
+    }).catch(err => {console.log(err)})
+})
+
+// router.route('/personas/:id').put((req, res) => {
+//     let persona = {...req.body}
+//     Db.editPersona(persona).then(data => {
+//         res.status(200).json(data);
+//     }).catch(err => {console.log(err)})
+// })

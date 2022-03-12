@@ -1,10 +1,17 @@
 const config = require('./dbconfig')
 const sql = require('mssql');
 
+
+/*********************/
+//      ROUTES
+/*********************/
+
+// Persona
 async function getPersonas() {
     try{
         let pool = await sql.connect(config);
-        let personas = await pool.request().query('SELECT * FROM Persona');
+        let personas = await pool.request()
+        .execute('GetPersonas');
         return personas.recordsets;
     }catch(err){console.log(err);}
 }
@@ -14,7 +21,7 @@ async function getPersona(PersonaId){
         let pool = await sql.connect(config);
         let persona = pool.request()
         .input('IdPersona', sql.Int, PersonaId)
-        .query('SELECT * FROM Persona WHERE IdPersona = @IdPersona');
+        .execute('GetPersona');
         return (await persona).recordsets;
                  
     }catch(err){console.log(err);}
@@ -24,7 +31,6 @@ async function addPersona(persona){
     try{
         let pool = await sql.connect(config);
         let insertPersona = pool.request()
-        .input('IdPersona', sql.Int, persona.IdPersona)
         .input('Nombre', sql.NVarChar, persona.Nombre)
         .input('FechaDeNacimiento', sql.DateTime, persona.FechaDeNacimiento)
         .input('Genero', sql.NVarChar, persona.Genero)
@@ -60,9 +66,76 @@ async function editPersona(persona){
         .input('Nombre', sql.NVarChar, persona.Nombre)
         .input('FechaDeNacimiento', sql.DateTime, persona.FechaDeNacimiento)
         .input('Genero', sql.NVarChar, persona.Genero)
-        .execute('InsertarPersona');
+        .execute('ActualizarPersona');
     } catch (err) {console.log(err)}
 }
+
+// Empleado
+
+async function getEmpleados(){
+    try{
+        let pool = await sql.connect(config);
+        let personas = pool.request()
+        .execute('GetEmpleados');
+        return (await personas).recordsets;
+    }catch(err) {console.log(err)}
+}
+
+async function getEmpleado(IdEmpleado){
+    try {
+        let pool = await sql.connect(config);
+        let empleado = pool.request()
+        .input('IdEmpleado', sql.Int, IdEmpleado)
+        .execute('GetEmpleado');
+        return (await empleado).recordset
+    } catch (err) {console.log(err)}
+}
+
+async function addEmpleado(empleado){
+    try {
+        let pool = await sql.connect(config);
+        let addEmpleado = pool.request()
+        .input('IdPersona', sql.Int, empleado.IdPersona) 
+        .input('IdDepartamento', sql.Int, empleado.IdDepartamento) 
+        .input('IdPuesto', sql.Int, empleado.IdPuesto)
+        .execute('InsertarEmpleado')
+        return (await addEmpleado).recordset
+    } catch (err) {
+        
+    }
+}
+
+async function editEmpleado(empleado){
+    try {
+        let pool = await sql.connect(config);
+        let editEmpleado = pool.request()
+        .input('IdEmpleado', sql.Int, empleado.IdEmpleado)
+        .input('IdPersona', sql.Int, empleado.IdPersona)
+        .input('IdDepartamento', sql.Int, empleado.IdDepartamento)
+        .execute('ActualizarEmpleado');
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function deleteEmpleado(IdEmpleado){
+    let pool = await sql.connect(config);
+    let deleteEmpleado = pool.request()
+    .input('IdEmpleado', sql.Int, IdEmpleado)
+    .execute('EliminarEmpleado')
+}
+
+// async function deletePersona(IdPersona){
+//     try{
+//         let pool = await sql.connect(config);
+//         let deletePersona = pool.request()
+//         .input('IdPersona', sql.Int, IdPersona)
+//         .execute('EliminarPersona');
+//         return deletePersona.recordsets;
+//     }catch(err){console.log(err);}
+// }
+
+
 
 /*********************/
 //      EXPORTS
@@ -73,6 +146,14 @@ module.exports = {
     getPersonas: getPersonas,
     getPersona: getPersona,
     addPersona: addPersona,
-    deletePersona: deletePersona   
+    deletePersona: deletePersona,
+    editPersona: editPersona,
+    // Empleado Methods
+    getEmpleados: getEmpleados,
+    getEmpleado: getEmpleado,
+    addEmpleado: addEmpleado,
+    editEmpleado: editEmpleado,
+    deleteEmpleado: deleteEmpleado
+    
     // ... 
 }
