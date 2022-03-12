@@ -50,6 +50,20 @@ async function deletePersona(IdPersona){
     }catch(err){console.log(err);}
 }
 
+// deletePersona(100)
+
+async function editPersona(persona){
+    try {
+        let pool = await sql.connect(config);
+        let editPersona = pool.request()
+        .input('IdPersona', sql.Int, persona.IdPersona)
+        .input('Nombre', sql.NVarChar, persona.Nombre)
+        .input('FechaDeNacimiento', sql.DateTime, persona.FechaDeNacimiento)
+        .input('Genero', sql.NVarChar, persona.Genero)
+        .execute('InsertarPersona');
+    } catch (err) {console.log(err)}
+}
+
 /*********************/
 //      EXPORTS
 /*********************/

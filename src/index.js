@@ -2,7 +2,7 @@ const Db = require('./db/dboperations')
 const Persona = require('./classes/persona')
 const express = require('express');
 const bodyParser = require('body-parser')
-const cors = require('cors');
+var cors = require('cors');
 const { response } = require('express');
 const { request } = require('express');
 const { json } = require('express/lib/response');
@@ -21,10 +21,10 @@ const router = express();
 app.use(express.urlencoded({    extended: true   }));
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({credentials: true}));
 app.use('/2h', router);
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 4444);
 
 app.listen(app.get('port'), () => console.log(`App running on port ${app.get('port')}`));
 
@@ -33,7 +33,18 @@ app.listen(app.get('port'), () => console.log(`App running on port ${app.get('po
 /*********************/
 
 router.use((req, res, next) => {
-    console.log('middleware');
+
+    //to allow cross domain requests to send cookie information.
+    res.header('Access-Control-Allow-Credentials', false);
+
+    // origin can not be '*' when crendentials are enabled. so need to set it to the request origin
+    res.header('Access-Control-Allow-Origin',  req.headers.origin);
+
+    // list of methods that are supported by the server
+    res.header('Access-Control-Allow-Methods','OPTIONS,GET,PUT,POST,DELETE');
+
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, X-XSRF-TOKEN');
+
     next();
 })
 
@@ -63,6 +74,14 @@ router.route('/personas').post((req, res) => {
 router.route('/personas/:id').delete((req, res) => {
     let IdPersona = req.params.id;
     Db.deletePersona(IdPersona).then(data => {
+        res.status(200).json(data);
+    })
+})
+
+router.route('/personas/:id').put((req, res) => {
+    let persona = {...req.body}
+    let IdPersona = req.params.id;
+    Db.addPersona(persona).then(data => {
         res.status(200).json(data);
     })
 })
