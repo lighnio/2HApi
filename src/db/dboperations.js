@@ -113,6 +113,7 @@ async function editEmpleado(empleado){
         .input('IdEmpleado', sql.Int, empleado.IdEmpleado)
         .input('IdPersona', sql.Int, empleado.IdPersona)
         .input('IdDepartamento', sql.Int, empleado.IdDepartamento)
+        .input('IdPuesto', sql.Int, empleado.IdPuesto)
         .execute('ActualizarEmpleado');
     } catch (err) {
         console.log(err);
@@ -139,9 +140,9 @@ async function getRegistro(){
 async function addRegistro(registro){
     let pool = await sql.connect(config);
     let addRegistro = pool.request()
-    .input('CodigoEmpleado', sql.Int, registro.CodigoEmpleado)
+    .input('CodigoEmpleado', sql.Int, registro.IdEmpleado)
     .input('TipoMovimiento', sql.VarChar, registro.TipoMovimiento)
-    .input('Jornada', sql.Int, registro.Jornada)
+    .input('Jornada', sql.Int, registro.IdJornada)
     .execute('InsertarRegistro');
 }
 
@@ -152,6 +153,15 @@ async function getPlanilla(){
     let planilla = pool.request()
     .execute('Planilla');
     return (await planilla).recordsets
+}
+
+// Bitacora
+
+async function getBitacora(){
+    let pool = await sql.connect(config);
+    let bitacora = pool.request()
+    .execute('Bitacora');
+    return (await bitacora).recordsets
 }
 
 /*********************/
@@ -175,7 +185,9 @@ module.exports = {
     getRegistro: getRegistro,
     addRegistro: addRegistro,
     // Planilla
-    getPlanilla: getPlanilla
+    getPlanilla: getPlanilla,
+    // Bitacora
+    getBitacora: getBitacora
     
     // ... 
 }

@@ -130,13 +130,13 @@ router.route('/empleados/:id').delete((req, res) => {
 
 // Registro
 
-router.route('/registro').get((req, res) => {
+router.route('/registros').get((req, res) => {
     Db.getRegistro().then(data => {
         res.json(data[0]);
     }).catch(err => {console.log(err)})
 })
 
-router.route('/registro').post((req, res) => {
+router.route('/registros').post((req, res) => {
     let registro = {...req.body}
     Db.addRegistro(registro).then(data => {
         res.status(200).json(data);
@@ -148,5 +148,12 @@ router.route('/registro').post((req, res) => {
 router.route('/planilla').get((req, res) => {
     Db.getPlanilla().then(data => {
         res.json(data[0]);
-    }).catch(err => {console.log(err)})
+    })
+})
+
+// Bitacora
+router.route('/bitacora').get((req, res) => {
+    Db.getBitacora().then(data => {
+        res.json(data[0]);
+    })
 })
